@@ -1,0 +1,62 @@
+version: "3"
+services:
+  dev-app-api:
+    build: 
+        context: ./api
+        dockerfile: Dockerfile.dev
+    user: root
+    ports:
+      - "6200:4000"
+    restart: always
+    volumes:
+      - /var/lib/jenkins/workspace/ace_book_staging/api:/usr/src/app/acebook_staging/api
+      - /usr/src/app/acebook_staging/api/dist
+      - /usr/src/app/acebook_staging/api/node_modules
+
+  dev-app-file:
+      build: 
+        context: ./file-srv
+        dockerfile: Dockerfile.dev
+      user: root
+      ports:
+        - "6302:3002"
+      restart: always
+      volumes:
+        - /var/lib/jenkins/workspace/ace_book_staging/file-srv:/usr/src/app/acebook_staging/file-srv
+        - /mnt/nas/acebook/uploads-demo:/usr/src/app/acebook_staging/file-srv/public/ftp/uploads
+        - /usr/src/app/acebook_staging/file-srv/node_modules
+
+  dev-app-front:
+    build: 
+      context: ./front
+      dockerfile: Dockerfile.dev
+    user: root
+    privileged: true
+    ports:
+      - "6100:3000"
+    restart: always
+    volumes:
+      - /var/lib/jenkins/workspace/ace_book_staging/front:/usr/src/app/acebook_staging/front
+      - /mnt/nas/acebook/uploads-demo:/usr/src/app/acebook_staging/front/public/uploads
+      - /usr/src/app/acebook_staging/front/node_modules
+      - /usr/src/app/acebook_staging/front/.next
+    depends_on:
+      - "dev-app-api"
+
+  dev-app-investors:
+      build: 
+        context: ./investors-client
+        dockerfile: Dockerfile.dev
+      user: root
+      privileged: true
+      ports:
+        - "6203:3003"
+      restart: always
+      volumes:
+        - /var/lib/jenkins/workspace/ace_book_staging/investors-client:/usr/src/app/acebook_staging/investors-client
+        - /mnt/nas/acebook/uploads-demo:/usr/src/app/acebook_staging/investors-client/public/uploads
+        - /usr/src/app/acebook_staging/investors-client/node_modules
+        - /usr/src/app/acebook_staging/investors-client/.next
+      depends_on:
+        - "dev-app-api"
+

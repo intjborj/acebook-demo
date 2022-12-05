@@ -1,0 +1,69 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: acebookapi-beta
+  namespace: mongodb
+  labels:
+    app: acebookapi-beta
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: acebookapi-beta
+  template:
+    metadata:
+      labels:
+        app: acebookapi-beta
+    spec:
+      containers:
+      - image: acemcbmis/acebook-api-beta:beta-1.0.0
+        name: acebookapi-beta
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: acebookapi-beta
+  namespace: mongodb
+  labels:
+    app: acebookapi-beta
+spec:
+  ports:
+  - port: 4000
+    protocol: TCP
+    name: acebookapi-beta
+  selector:
+    app: acebookapi-beta
+  sessionAffinity: None
+  type: ClusterIP
+
+---
+
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: acebookapi-beta
+  namespace: mongodb
+  annotations:
+#    nginx.ingress.kubernetes.io/rewrite-target: /
+    cert-manager.io/cluster-issuer: 'letsencrypt-prod'
+#    nginx.ingress.kubernetes.io/rewrite-target: 'letsencrypt-prod'
+
+spec:
+  tls:
+    - hosts:
+        - acebook-api-beta.acemcbohol.ph
+      secretName: acebookapi-beta-api-tls-secret
+  ingressClassName: nginx
+  rules:
+  - host: acebook-api-beta.acemcbohol.ph
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: acebookapi-beta
+            port:
+              number: 4000

@@ -1,0 +1,22 @@
+FROM node:16.13.0-alpine
+WORKDIR /usr/src/app/acebook_staging/front
+COPY package*.json ./
+COPY . .
+
+ENV FRAMEWORK_PROVIDER="graphql"
+ENV NEXT_PUBLIC_GRAPHQL_API_ENDPOINT="https://acebook-api-demo.acemcbohol.ph/graphql"
+ENV NEXT_PUBLIC_GRAPHQL_API_ENDPOINT_SUBSCRIPTION_DEV="wss://acebook-api-demo.acemcbohol.ph/graphql"
+ENV NEXT_PUBLIC_PROD_FRONTEND_ENDPOINT="https://acebook-demo.acemcbohol.ph"
+ENV NEXT_PUBLIC_SITE_URL="https://acebook-demo.acemcbohol.ph"
+ENV NEXT_PUBLIC_FILE_SERVER_PROD="https://acebook-flsrv-demo.acemcbohol.ph/ftp/uploads/"
+ENV NEXT_PUBLIC_CLIENT_ENC_SECRET = "ACE78!!hjiNew90JckyDevSE"
+ENV SECRET=ACEBOOK123!!
+ENV GOOGLE_CLIENT_SECRET=232432
+
+RUN yarn
+
+RUN yarn build:gql
+EXPOSE 6100
+
+CMD ["yarn", "start"]
+

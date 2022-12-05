@@ -1,0 +1,49 @@
+pipeline {
+    agent any 
+    environment {
+    DOCKERHUB_CREDENTIALS = credentials('docker-hub')
+    }
+    stages { 
+        // stage('SCM Checkout') {
+        //     steps{
+        //     git 'https://github.com/mis2021/ACE-BOOK.git'
+        //     }
+        // }
+
+        stage('Build docker ') {
+            steps {  
+	//   sh 'docker-compose -f docker-compose.yml -f docker-compose.dev.yml build'
+    sh 'docker-compose -f docker-compose.yml -f docker-compose.dev.yml build dev-app-api'
+	  sh 'docker-compose -f docker-compose.yml -f docker-compose.dev.yml down'
+      	  sh 'docker-compose -f docker-compose.yml -f docker-compose.dev.yml up -d dev-app-api '
+
+            }
+        }
+
+ stage('run docker ') {
+            steps {  
+
+       sh 'docker-compose -f docker-compose.yml -f docker-compose.dev.yml build'
+	  sh 'docker-compose -f docker-compose.yml -f docker-compose.dev.yml up -d'
+            }
+        }
+
+
+ 	
+        stage('login to dockerhub') {
+            steps{
+                sh 'echo $DOCKERHUB_CREDENTIALS_PSW | docker login -u $DOCKERHUB_CREDENTIALS_USR --password-stdin'
+            }
+        }
+        stage('push image') {
+            steps{
+                sh 'docker push acemcbmis/ace-book-system:latest'
+            }
+        }
+}
+post {
+        always {
+            sh 'docker logout'
+        }
+    }
+  }

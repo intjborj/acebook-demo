@@ -1,0 +1,80 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: acebookfront-live
+  namespace: acebook-live
+  labels:
+    app: acebookfront-live
+spec:
+  replicas: 2
+  revisionHistoryLimit: 3
+  selector:
+    matchLabels:
+      app: acebookfront-live
+  template:
+    metadata:
+      labels:
+        app: acebookfront-live
+    spec:
+      containers:
+      - image: acemcbmis/acebook-front-live:1.0.15
+        name: acebookfront-live
+        ports:
+            - containerPort: 3000
+        volumeMounts:
+            - mountPath: /usr/src/app/acebook_live/front/public/uploads
+              name: front-data-live
+      volumes:
+        - name: front-data-live
+          persistentVolumeClaim:
+            claimName: pvc-upload-live-acebook
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: acebookfront-live
+  namespace: acebook-live
+  labels:
+    app: acebookfront-live
+spec:
+  ports:
+  - port: 3000
+    protocol: TCP
+    name: acebookfront-live
+  selector:
+    app: acebookfront-live
+  sessionAffinity: None
+  type: ClusterIP
+
+---
+
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: acebookfront-live
+  namespace: acebook-live
+  annotations:
+#    nginx.ingress.kubernetes.io/rewrite-target: /
+    cert-manager.io/cluster-issuer: 'letsencrypt-prod'
+#    nginx.ingress.kubernetes.io/rewrite-target: 'letsencrypt-prod'
+    nginx.ingress.kubernetes.io/proxy-body-size: "50m"
+    nginx.org/client-max-body-size: "50m"
+
+spec:
+  tls:
+    - hosts:
+        - acebook.acemcbohol.ph
+      secretName: acebook-front-live-tls-secret
+  ingressClassName: nginx
+  rules:
+  - host: acebook.acemcbohol.ph
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: acebookfront-live
+            port:
+              number: 3000

@@ -1,0 +1,22 @@
+version: '2.1'
+
+services:
+  front:
+    build: ./front
+    volumes:
+      - ./front:/usr/src/app/acebook/front
+    ports:
+      - 3001:3001
+    depends_on:
+      - api-service   
+
+  api-service: 
+    build: ./api
+    volumes:
+      - ./api:/usr/src/app/acebook/api
+    ports:
+      - 4000:4000
+
+  
+
+  

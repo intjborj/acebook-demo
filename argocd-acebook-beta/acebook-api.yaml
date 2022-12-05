@@ -1,0 +1,82 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: acebookapi-beta
+  namespace: mongodb
+  labels:
+    app: acebookapi-beta
+spec:
+  replicas: 2
+  revisionHistoryLimit: 3
+  selector:
+    matchLabels:
+      app: acebookapi-beta
+  template:
+    metadata:
+      labels:
+        app: acebookapi-beta
+    spec:
+      containers:
+      - image: acemcbmis/acebook-api-beta:1.0.09badp
+        name: acebookapi-beta
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: acebookapi-beta
+  namespace: mongodb
+  labels:
+    app: acebookapi-beta
+spec:
+  ports:
+  - port: 4000
+    protocol: TCP
+    name: acebookapi-beta
+  selector:
+    app: acebookapi-beta
+  sessionAffinity: None
+  type: ClusterIP
+
+---
+
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: acebookapi-beta
+  namespace: mongodb
+  annotations:
+#    nginx.ingress.kubernetes.io/rewrite-target: /
+    cert-manager.io/cluster-issuer: 'letsencrypt-prod'
+    nginx.org/websocket-services: "graphql"
+#    nginx.ingress.kubernetes.io/rewrite-target: 'letsencrypt-prod'
+    nginx.ingress.kubernetes.io/server-snippets: |
+     location / {
+      proxy_set_header Upgrade $http_upgrade;
+      proxy_http_version 1.1;
+      proxy_set_header X-Forwarded-Host $http_host;
+      proxy_set_header X-Forwarded-Proto $scheme;
+      proxy_set_header X-Forwarded-For $remote_addr;
+      proxy_set_header Host $host;
+      proxy_set_header Connection "upgrade";
+      proxy_cache_bypass $http_upgrade;
+      }
+
+spec:
+  tls:
+    - hosts:
+        - acebook-api-beta.acemcbohol.ph
+      secretName: acebookapi-beta-api-tls-secret
+  ingressClassName: nginx
+  rules:
+  - host: acebook-api-beta.acemcbohol.ph
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: acebookapi-beta
+            port:
+              number: 4000

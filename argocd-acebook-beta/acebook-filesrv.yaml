@@ -1,0 +1,76 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: acebookfilesrv-beta
+  namespace: acebook-beta
+  labels:
+    app: acebookfilesrv-beta
+spec:
+  replicas: 2
+  revisionHistoryLimit: 3
+  selector:
+    matchLabels:
+      app: acebookfilesrv-beta
+  template:
+    metadata:
+      labels:
+        app: acebookfilesrv-beta
+    spec:
+      containers:
+      - image: acemcbmis/acebook-filesrv-beta:1.0.00badp
+        name: acebookfilesrv-beta
+        volumeMounts:
+            - mountPath: /usr/src/app/acebook_beta/file-srv/public/ftp/uploads
+              name: filesrv-data-beta
+      volumes:
+        - name: filesrv-data-beta
+          persistentVolumeClaim:
+            claimName: pvc-upload-beta
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: acebookfilesrv-beta
+  namespace: acebook-beta
+  labels:
+    app: acebookfilesrv-beta
+spec:
+  ports:
+  - port: 3002
+    protocol: TCP
+    name: acebookfilesrv-beta
+  selector:
+    app: acebookfilesrv-beta
+  sessionAffinity: None
+  type: ClusterIP
+
+---
+
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: acebookfilesrv-beta
+  namespace: acebook-beta
+  annotations:
+#    nginx.ingress.kubernetes.io/rewrite-target: /
+    cert-manager.io/cluster-issuer: 'letsencrypt-prod'
+#    nginx.ingress.kubernetes.io/rewrite-target: 'letsencrypt-prod'
+
+spec:
+  tls:
+    - hosts:
+        - acebook-flsrv-beta.acemcbohol.ph
+      secretName: acebook-flsrv-beta-tls-secret
+  ingressClassName: nginx
+  rules:
+  - host: acebook-flsrv-beta.acemcbohol.ph
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: acebookfilesrv-beta
+            port:
+              number: 3002

@@ -1,0 +1,1 @@
+export const POLL_ERROR_REACHED = "Votes reached limits"

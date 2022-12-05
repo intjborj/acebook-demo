@@ -1,0 +1,44 @@
+version: "3"
+services:
+  app-api:
+    build: ./api
+    user: root
+    ports:
+      - "4000:4000"
+    restart: always
+    volumes:
+      - /var/lib/jenkins/workspace/ace_book/api:/usr/src/app/acebook/api
+      - /usr/src/app/acebook/api/dist
+      - /usr/src/app/acebook/api/node_modules
+
+  app-file:
+      build: ./file-srv
+      user: root
+      ports:
+        - "3002:3002"
+      restart: always
+      volumes:
+        - /var/lib/jenkins/workspace/ace_book/file-srv:/usr/src/app/acebook/file-srv
+        - /mnt/nas/acebook/uploads:/usr/src/app/acebook/file-srv/public/ftp/uploads
+        - /usr/src/app/acebook/file-srv/node_modules
+
+  app-front:
+    build: ./front
+    user: root
+    privileged: true
+    ports:
+      - "3000:3000"
+    restart: always
+    volumes:
+      - /var/lib/jenkins/workspace/ace_book/front:/usr/src/app/acebook/front
+      - /mnt/nas/acebook/uploads:/usr/src/app/acebook/front/public/uploads
+      - /usr/src/app/acebook/front/node_modules
+      - /usr/src/app/acebook/front/.next
+    depends_on:
+      - "app-api"
+
+volumes:
+  api:
+  file-srv:
+  front:
+  database-data:

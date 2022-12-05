@@ -1,0 +1,88 @@
+pipeline {
+    agent any 
+    environment {
+    DOCKERHUB_CREDENTIALS = credentials('docker-hub')
+    }
+    stages { 
+        // stage('SCM Checkout') {
+        //     steps{
+        //     git 'https://github.com/mis2021/ACE-BOOK.git'
+        //     }
+        // }
+
+        stage('Build API') {
+            steps {  
+                sh 'docker-compose -f docker-compose.yml -f docker-compose.dev.yml build dev-app-api'
+            }
+        }
+
+        stage('Down All and Up API') {
+            steps {  
+                sh 'docker-compose -f docker-compose.yml -f docker-compose.dev.yml down'
+                sh 'docker-compose -f docker-compose.yml -f docker-compose.dev.yml up -d dev-app-api '
+            }
+        }
+
+
+        // stage('Build All Fronts and File Server') {
+        //     steps {  
+        //        sh 'docker-compose -f docker-compose.yml -f docker-compose.dev.yml build dev-app-file'
+        //        sh 'docker-compose -f docker-compose.yml -f docker-compose.dev.yml build dev-app-front'
+        //        sh 'docker-compose -f docker-compose.yml -f docker-compose.dev.yml build dev-app-investors'
+        //     }
+        // } 
+        // stage('Build File') {
+        //     steps {  
+        //        sh 'docker-compose -f docker-compose.yml -f docker-compose.dev.yml build dev-app-file'
+        //     }
+        // }
+        // stage('Build Front') {
+        //     steps {  
+        //        sh 'docker-compose -f docker-compose.yml -f docker-compose.dev.yml build dev-app-front'
+        //     }
+        // }
+        // stage('Build Investor') {
+        //     steps {  
+        //        sh 'docker-compose -f docker-compose.yml -f docker-compose.dev.yml build dev-app-investors'
+        //     }
+        // }
+
+         stage('Build All') {
+            steps {  
+               sh 'docker-compose -f docker-compose.yml -f docker-compose.dev.yml build dev-app-file'
+               sh 'docker-compose -f docker-compose.yml -f docker-compose.dev.yml build dev-app-front'
+               sh 'docker-compose -f docker-compose.yml -f docker-compose.dev.yml build dev-app-investors'
+            }
+        }
+
+        stage('Up All') {
+            steps {  
+                  sh 'docker-compose -f docker-compose.yml -f docker-compose.dev.yml up -d dev-app-file'
+                  sh 'docker-compose -f docker-compose.yml -f docker-compose.dev.yml up -d dev-app-front'
+                  sh 'docker-compose -f docker-compose.yml -f docker-compose.dev.yml up -d dev-app-investors'
+	        //    sh 'docker-compose -f docker-compose.yml -f docker-compose.dev.yml up -d'
+            }
+        }
+
+
+ 	
+        stage('Login to dockerhub') {
+            steps{
+                sh 'echo $DOCKERHUB_CREDENTIALS_PSW | docker login -u $DOCKERHUB_CREDENTIALS_USR --password-stdin'
+            }
+        }
+        stage('Push image') {
+                steps{
+                    sh 'docker push acemcbmis/dev-app-api'
+                    sh 'docker push acemcbmis/dev-app-file'
+                    sh 'docker push acemcbmis/dev-app-front'
+                    sh 'docker push acemcbmis/dev-app-investors'
+                }
+            }
+}
+post {
+        always {
+            sh 'docker logout'
+        }
+    }
+  }

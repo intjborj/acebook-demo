@@ -1,0 +1,76 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: acebookfilesrv-live
+  namespace: acebook-live
+  labels:
+    app: acebookfilesrv-live
+spec:
+  replicas: 2
+  revisionHistoryLimit: 3
+  selector:
+    matchLabels:
+      app: acebookfilesrv-live
+  template:
+    metadata:
+      labels:
+        app: acebookfilesrv-live
+    spec:
+      containers:
+      - image: acemcbmis/acebook-filesrv-live:1.0.00
+        name: acebookfilesrv-live
+        volumeMounts:
+            - mountPath: /usr/src/app/acebook_live/file-srv/public/ftp/uploads
+              name: filesrv-data-live
+      volumes:
+        - name: filesrv-data-live
+          persistentVolumeClaim:
+            claimName: pvc-upload-live-acebook
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: acebookfilesrv-live
+  namespace: acebook-live
+  labels:
+    app: acebookfilesrv-live
+spec:
+  ports:
+  - port: 3002
+    protocol: TCP
+    name: acebookfilesrv-live
+  selector:
+    app: acebookfilesrv-live
+  sessionAffinity: None
+  type: ClusterIP
+
+---
+
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: acebookfilesrv-live
+  namespace: acebook-live
+  annotations:
+#    nginx.ingress.kubernetes.io/rewrite-target: /
+    cert-manager.io/cluster-issuer: 'letsencrypt-prod'
+#    nginx.ingress.kubernetes.io/rewrite-target: 'letsencrypt-prod'
+
+spec:
+  tls:
+    - hosts:
+        - acebook-flsrv.acemcbohol.ph
+      secretName: acebook-flsrv-live-tls-secret
+  ingressClassName: nginx
+  rules:
+  - host: acebook-flsrv.acemcbohol.ph
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: acebookfilesrv-live
+            port:
+              number: 3002
