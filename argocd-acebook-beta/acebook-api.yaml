@@ -17,7 +17,7 @@ spec:
         app: acebookapi-beta
     spec:
       containers:
-      - image: intjborj/api-demo:latest
+      - image: intjborj/api-demo:v1
         name: acebookapi-beta
 
 ---
@@ -55,7 +55,7 @@ spec:
   #     secretName: acebookapi-beta-api-tls-secret
   ingressClassName: nginx
   rules:
-  - host: 192.168.1.240.nip.io
+  - host: 192.168.254.240.sslip.io	
     http:
       paths:
       - path: /
