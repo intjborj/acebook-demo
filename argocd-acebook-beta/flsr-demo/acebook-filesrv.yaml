@@ -6,8 +6,8 @@ metadata:
   labels:
     app: acebookfilesrv-beta
 spec:
-  replicas: 2
-  revisionHistoryLimit: 3
+  replicas: 1
+  revisionHistoryLimit: 1
   selector:
     matchLabels:
       app: acebookfilesrv-beta
@@ -53,18 +53,18 @@ metadata:
   name: acebookfilesrv-beta
   namespace: acebook-beta
   annotations:
-#    nginx.ingress.kubernetes.io/rewrite-target: /
-    cert-manager.io/cluster-issuer: 'letsencrypt-prod'
+    nginx.ingress.kubernetes.io/rewrite-target: /
+    # cert-manager.io/cluster-issuer: 'letsencrypt-prod'
 #    nginx.ingress.kubernetes.io/rewrite-target: 'letsencrypt-prod'
 
 spec:
-  tls:
-    - hosts:
-        - acebook-flsrv-beta.acemcbohol.ph
-      secretName: acebook-flsrv-beta-tls-secret
+  # tls:
+  #   - hosts:
+  #       - acebook-flsrv-beta.acemcbohol.ph
+  #     secretName: acebook-flsrv-beta-tls-secret
   ingressClassName: nginx
   rules:
-  - host: acebook-flsrv-beta.acemcbohol.ph
+  - host: 192.168.254.109.xip.io
     http:
       paths:
       - path: /
