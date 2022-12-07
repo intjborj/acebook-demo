@@ -17,7 +17,7 @@ spec:
         app: acebookapi-beta
     spec:
       containers:
-      - image: intjborj/api-demo:v1
+      - image: intjborj/api-demo:v3
         name: acebookapi-beta
 
 ---

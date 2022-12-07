@@ -8,7 +8,7 @@ ENV DATABASE_URL_DEV="mongodb://192.168.254.241:27017,192.168.254.242:27017,192.
 ENV SMS_URL="http://139.135.152.75:8087/cgi/WebCGI?1500101=account=apiuser&password=apipass&port=1"
 ENV DATABASE_NAME=jestoni
 ENV SYS_ENV=production
-ENV FRONT_URL="https://192.168.254.240.sslip.io"
+ENV FRONT_URL="http://192.168.254.240.sslip.io"
 # ENV NODE_ENV=production
 
 RUN yarn
