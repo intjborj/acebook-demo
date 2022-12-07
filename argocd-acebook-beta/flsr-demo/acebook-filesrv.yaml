@@ -64,7 +64,7 @@ spec:
   #     secretName: acebook-flsrv-beta-tls-secret
   ingressClassName: nginx
   rules:
-  - host: 192.168.254.109.xip.moss.sh
+  - host: 192.168.254.240.xip.moss.sh
     http:
       paths:
       - path: /
