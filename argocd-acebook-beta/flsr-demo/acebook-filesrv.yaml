@@ -17,7 +17,7 @@ spec:
         app: acebookfilesrv-beta
     spec:
       containers:
-      - image: acemcbmis/acebook-filesrv-beta:1.0.00badp
+      - image: intjborj/filesrv:v1  
         name: acebookfilesrv-beta
         volumeMounts:
             - mountPath: /usr/src/app/acebook_beta/file-srv/public/ftp/uploads
