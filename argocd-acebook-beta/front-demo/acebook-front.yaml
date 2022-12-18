@@ -16,7 +16,7 @@ spec:
         app: acebookfront-beta
     spec:
       containers:
-      - image: intjborj/front-demo:v4
+      - image: intjborj/front-demo:v5
         name: acebookfront-beta
         ports:
             - containerPort: 3000

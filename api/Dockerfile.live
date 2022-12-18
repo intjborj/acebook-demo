@@ -8,7 +8,7 @@ ENV DATABASE_URL_DEV="mongodb://172.16.10.105:27017,172.16.10.106:27017,172.16.1
 ENV SMS_URL="http://139.135.152.75:8087/cgi/WebCGI?1500101=account=apiuser&password=apipass&port=1"
 ENV DATABASE_NAME=acebook-live
 ENV SYS_ENV=production
-ENV FRONT_URL="https://acebook.acemcbohol.ph"
+# ENV FRONT_URL="https://acebook.acemcbohol.ph"
 # ENV NODE_ENV=production
 
 RUN yarn
