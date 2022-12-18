@@ -7,7 +7,6 @@ metadata:
     app: acebookfilesrv-beta
 spec:
   replicas: 1
-  revisionHistoryLimit: 1
   selector:
     matchLabels:
       app: acebookfilesrv-beta
