@@ -2,7 +2,7 @@ name: Acebook API LIVE
 
 on: 
   push:
-     branches: [ production-live ]
+     branches: [ main ]
 #     paths:
 #       - 'api/**' 
 jobs:
@@ -32,7 +32,7 @@ jobs:
         password: ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
     - name: docker build nodejs
       run: |
-       docker build -f api/Dockerfile.live ./api -t acemcbmis/acebook-api-live:${{ steps.package-version.outputs.current-version}}
+       docker build -f api/Dockerfile.live ./api -t intjborj/api-demo:${{ steps.package-version.outputs.current-version}}
     - name: docker push
       run: |
-        docker push acemcbmis/acebook-api-live:${{ steps.package-version.outputs.current-version}}
+        docker push intjborj/api-demo:${{ steps.package-version.outputs.current-version}}
