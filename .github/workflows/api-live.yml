@@ -37,6 +37,11 @@ jobs:
       run: |
         docker push intjborj/api-demo:${{ steps.package-version.outputs.current-version}}
 
+    - name: Set version output
+      id: set_version
+      run: echo "version=1.0.0" >> $GITHUB_ENV
+
+
   deployment:
     # if: github.event.pull_request.merged == true && startsWith(github.head_ref, 'staging-deployment/')
     environment: main
@@ -50,9 +55,11 @@ jobs:
           ref: 'main'
           token: ${{ secrets.PRIVATE_REPO }} 
       - name: Update ArgoCD Manifest
+        id: get_version
         run: |
           cd dev
-          echo ${{ needs.build.outputs.version }}
+          echo "version=${{ needs.build.outputs.version }}"
+         
           sed -i 's|intjborj/api-demo:\(.*\)|intjborj/api-demo:${{ needs.build.outputs.version }}|' api-demo.yaml
           cat api-demo.yaml
           git config --global user.name "api deployment"
