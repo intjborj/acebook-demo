@@ -1,70 +1,72 @@
-apiVersion: apps/v1
-kind: Deployment
-metadata:
-  name: acebookapi-live
-  namespace: mongodb
-  labels:
-    app: acebookapi-live
-spec:
-  replicas: 2
-  revisionHistoryLimit: 3
-  selector:
-    matchLabels:
-      app: acebookapi-live
-  template:
-    metadata:
-      labels:
-        app: acebookapi-live
-    spec:
-      containers:
-      - image: acemcbmis/acebook-api-live:1.0.09
-        name: acebookapi-live
+# apiVersion: apps/v1
+# kind: Deployment
+# metadata:
+#   name: acebookapi-live
+#   namespace: mongodb
+#   labels:
+#     app: acebookapi-live
+# spec:
+#   replicas: 2
+#   revisionHistoryLimit: 3
+#   selector:
+#     matchLabels:
+#       app: acebookapi-live
+#   template:
+#     metadata:
+#       labels:
+#         app: acebookapi-live
+#     spec:
+#       containers:
+#       - image: acemcbmis/acebook-api-live:1.0.09
+#         name: acebookapi-live
 
----
+# ---
 
-apiVersion: v1
-kind: Service
-metadata:
-  name: acebookapi-live
-  namespace: mongodb
-  labels:
-    app: acebookapi-live
-spec:
-  ports:
-  - port: 4000
-    protocol: TCP
-    name: acebookapi-live
-  selector:
-    app: acebookapi-live
-  sessionAffinity: None
-  type: ClusterIP
+# apiVersion: v1
+# kind: Service
+# metadata:
+#   name: acebookapi-live
+#   namespace: mongodb
+#   labels:
+#     app: acebookapi-live
+# spec:
+#   ports:
+#   - port: 4000
+#     protocol: TCP
+#     name: acebookapi-live
+#   selector:
+#     app: acebookapi-live
+#   sessionAffinity: None
+#   type: ClusterIP
 
----
+# ---
 
-apiVersion: networking.k8s.io/v1
-kind: Ingress
-metadata:
-  name: acebookapi-live
-  namespace: mongodb
-  annotations:
-#    nginx.ingress.kubernetes.io/rewrite-target: /
-    cert-manager.io/cluster-issuer: 'letsencrypt-prod'
-#    nginx.ingress.kubernetes.io/rewrite-target: 'letsencrypt-prod'
+# apiVersion: networking.k8s.io/v1
+# kind: Ingress
+# metadata:
+#   name: acebookapi-live
+#   namespace: mongodb
+#   annotations:
+# #    nginx.ingress.kubernetes.io/rewrite-target: /
+#     cert-manager.io/cluster-issuer: 'letsencrypt-prod'
+# #    nginx.ingress.kubernetes.io/rewrite-target: 'letsencrypt-prod'
 
-spec:
-  tls:
-    - hosts:
-        - acebook-api.acemcbohol.ph
-      secretName: acebookapi-live-api-tls-secret
-  ingressClassName: nginx
-  rules:
-  - host: acebook-api.acemcbohol.ph
-    http:
-      paths:
-      - path: /
-        pathType: Prefix
-        backend:
-          service:
-            name: acebookapi-live
-            port:
-              number: 4000
+# spec:
+#   tls:
+#     - hosts:
+#         - acebook-api.acemcbohol.ph
+#       secretName: acebookapi-live-api-tls-secret
+#   ingressClassName: nginx
+#   rules:
+#   - host: acebook-api.acemcbohol.ph
+#     http:
+#       paths:
+#       - path: /
+#         pathType: Prefix
+#         backend:
+#           service:
+#             name: acebookapi-live
+#             port:
+#               number: 4000
+
+
