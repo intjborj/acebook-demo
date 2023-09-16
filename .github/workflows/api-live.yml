@@ -53,7 +53,7 @@ jobs:
         run: |
           cd dev
           echo ${{ needs.build.outputs.version }}
-          sed -i 's|intjborj/api-demo:\(.*\)|intjborj/api-demo:${{needs.build.outputs.version}}|' api-demo.yaml
+          sed -i 's|intjborj/api-demo:\(.*\)|intjborj/api-demo:${{ needs.build.outputs.version }}|' api-demo.yaml
           cat api-demo.yaml
           git config --global user.name "api deployment"
           git config user.email "intjborj@gmail.com"
