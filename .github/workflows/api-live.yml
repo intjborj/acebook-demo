@@ -8,8 +8,6 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest 
-    env:
-      DOCKER_CLI_AK: docker
     strategy:
       matrix:
         node-version: [16.13.0]
