@@ -36,14 +36,6 @@ jobs:
     - name: docker push
       run: |
         docker push intjborj/api-demo:${{ steps.package-version.outputs.current-version}}
-
-    - name: Set build version
-      id: set-version
-      run: |
-       # Logic to determine the version, e.g., extracting it from a file or environment variable
-        VERSION=$(cat version.txt)
-        echo "Version found: $VERSION"
-        echo "::set-output name=version::$VERSION"
   
   deployment:
     # if: github.event.pull_request.merged == true && startsWith(github.head_ref, 'staging-deployment/')
