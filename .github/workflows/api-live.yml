@@ -37,6 +37,13 @@ jobs:
       run: |
         docker push intjborj/api-demo:${{ steps.package-version.outputs.current-version}}
 
+    - name: Set build version
+      id: set-version
+      run: |
+       # Logic to determine the version, e.g., extracting it from a file or environment variable
+        VERSION=$(cat version.txt)
+        echo "Version found: $VERSION"
+        echo "::set-output name=version::$VERSION"
   
   deployment:
     # if: github.event.pull_request.merged == true && startsWith(github.head_ref, 'staging-deployment/')
@@ -53,7 +60,7 @@ jobs:
       - name: Update ArgoCD Manifest
         run: |
           cd dev
-          echo ${{ needs.build.outputs.version }}
+          echo "Version from 'build' job: ${{ needs.build.outputs.version }}"
           sed -i 's|intjborj/api-demo:\(.*\)|intjborj/api-demo:${{ needs.build.outputs.version }}|' api-demo.yaml
           cat api-demo.yaml
           git config --global user.name "api deployment"
