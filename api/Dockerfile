@@ -9,6 +9,7 @@ ENV SMS_URL="http://139.135.152.75:8087/cgi/WebCGI?1500101=account=apiuser&passw
 ENV DATABASE_NAME=acebook
 ENV SYS_ENV=production
 
+
 RUN yarn
 
 RUN yarn build
