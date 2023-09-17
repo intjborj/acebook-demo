@@ -63,11 +63,12 @@ jobs:
       - name: Update ArgoCD Manifest
         run: |
           cd dev
-          echo "Version from 'build' job: ${{ needs.build.outputs.version }}"
-          sed -i 's|intjborj/api-demo:\(.*\)|intjborj/api-demo:${{ needs.build.outputs.version }}|' api-demo.yaml
+          VERSION=${{ needs.build.outputs.version }}
+          echo "Version from 'build' job: ${{ VERSION }}"
+          sed -i 's|intjborj/api-demo:\(.*\)|intjborj/api-demo:${{ VERSION }}|' api-demo.yaml
           cat api-demo.yaml
           git config --global user.name "api deployment"
           git config user.email "intjborj@gmail.com"
           git add .
-          git commit -m "Updating api version to ${{ needs.build.outputs.version }}"
+          git commit -m "Updating api version to ${{ VERSION }}"
           git push -u origin main
