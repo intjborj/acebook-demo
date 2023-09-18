@@ -41,7 +41,7 @@ jobs:
 
   deployment:
     # if: github.event.pull_request.merged == true && startsWith(github.head_ref, 'staging-deployment/')
-    environment: stagging
+    environment: main
     runs-on: ubuntu-latest
     needs: build
     steps:
