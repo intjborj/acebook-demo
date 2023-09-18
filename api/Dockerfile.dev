@@ -1,21 +1,21 @@
-FROM node:16.13.0-alpine
-WORKDIR /usr/src/app/acebook_staging/api
-COPY package*.json ./
-COPY . .
+#FROM node:16.13.0-alpine
+#WORKDIR /usr/src/app/acebook_staging/api
+#COPY package*.json ./
+#COPY . .
 
-ENV DATABASE_URL="mongodb://172.16.10.101:7001/acebook-demo?directConnection=true"
-ENV DATABASE_URL_DEV="mongodb://172.16.10.101:7001/acebook-demo?directConnection=true"
-ENV SMS_URL="http://139.135.152.75:8087/cgi/WebCGI?1500101=account=apiuser&password=apipass&port=1"
-ENV DATABASE_NAME=acebook-demo
-ENV SYS_ENV=production
+#ENV DATABASE_URL="mongodb://172.16.10.101:7001/acebook-demo?directConnection=true"
+#ENV DATABASE_URL_DEV="mongodb://172.16.10.101:7001/acebook-demo?directConnection=true"
+#ENV SMS_URL="http://139.135.152.75:8087/cgi/WebCGI?1500101=account=apiuser&password=apipass&port=1"
+#ENV DATABASE_NAME=acebook-demo
+#ENV SYS_ENV=production
 # ENV NODE_ENV=production
 
-RUN yarn
+#RUN yarn
 
-RUN yarn build
-EXPOSE 6200
+#RUN yarn build
+#EXPOSE 6200
 # RUN yarn build:gql
 # RUN yarn start
 
-CMD ["yarn", "start:prod"]
+#CMD ["yarn", "start:prod"]
 # CMD ["yarn", "build", "start:prod"]
