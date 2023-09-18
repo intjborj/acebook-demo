@@ -13,7 +13,8 @@ jobs:
       matrix:
         node-version: [16.13.0]
         # See supported Node.js release schedule at https://nodejs.org/en/about/releases/
-
+    outputs:
+      version: ${{ steps.package-version.outputs.current-version }}
     
     steps:
     - uses: actions/checkout@v2
@@ -32,8 +33,8 @@ jobs:
       with:
         username: ${{ secrets.DOCKER_HUB_USERNAME }}
         password: ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
-    # - name: docker build nodejs
-    - run: |       
+    - name: docker build nodejs
+      run: |       
        docker build -f api/Dockerfile.beta ./api -t "intjborj/api-demo:${{ steps.package-version.outputs.current-version}}"  --build-arg PROJ_VERSION="${{ steps.package-version.outputs.current-version}}"  
     - name: docker push
       run: |
