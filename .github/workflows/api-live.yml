@@ -76,13 +76,5 @@ jobs:
           git commit -m "Updating api version to $BUILD_VERSION"
           git push -u origin main
 
-      - uses: actions/checkout@v2
-      - name: Sync ArgoCD Application
-        uses: omegion/argocd-actions@master
-        with:
-          address: "https://172.16.12.251.nip.io/"
-          token: ${{ secrets.ARGOCD_TOKEN }}
-          action: sync
-          appName: "sample"
 
           
