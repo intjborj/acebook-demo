@@ -38,7 +38,8 @@ jobs:
     - name: docker push
       run: |
         docker push intjborj/api-demo:${{ steps.package-version.outputs.current-version}}
-
+    
+    
   deployment:
     # if: github.event.pull_request.merged == true && startsWith(github.head_ref, 'staging-deployment/')
     environment: main
@@ -74,5 +75,14 @@ jobs:
           git add .
           git commit -m "Updating api version to $BUILD_VERSION"
           git push -u origin main
+
+      - uses: actions/checkout@v2
+      - name: Sync ArgoCD Application
+        uses: omegion/argocd-actions@master
+        with:
+          address: "https://172.16.12.251.nip.io/"
+          token: ${{ secrets.ARGOCD_TOKEN }}
+          action: sync
+          appName: "sample"
 
           
